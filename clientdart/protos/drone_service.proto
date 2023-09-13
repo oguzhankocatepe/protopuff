@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package drone;
+
+service DroneService {
+    rpc GetStatus(StatusRequest) returns (StatusResponse);
+    rpc GetStatusStream(StatusRequest) returns (stream StatusResponse);
+
+    rpc ChangeMode(ChangeModeRequest) returns (SimpleResponse);
+
+    rpc Charge(ChargeRequest) returns (ChargeResponse);
+    rpc ChargeStream(ChargeRequest) returns (stream ChargeResponse);
+}
+
+message StatusRequest {
+    int32 drone_id = 1;
+}
+
+enum Mode {
+    UNKNOWN = 0;
+    AUTO = 1;
+    MANUAL = 2;
+    CHARGING = 3;
+}
+
+message StatusResponse {
+    Mode mode = 1;
+    float battery_level = 2; // percentage
+}
+
+message ChangeModeRequest {
+    string drone_id = 1;
+    Mode new_mode = 2;
+}
+
+message ChargeRequest {
+    string drone_id = 1;
+    float target_battery_level = 2; // Target battery percentage for recharging
+}
+
+message SimpleResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message ChargeResponse {
+    float battery_level = 1;
+    bool charging_complete = 2;
+}
